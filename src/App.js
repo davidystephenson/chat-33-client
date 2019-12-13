@@ -14,7 +14,10 @@ class App extends Component {
     text: ''
   }
 
-  stream = new EventSource('http://localhost:4000/stream')
+  // url = 'http://localhost:4000'
+  url = 'https://hidden-earth-70020.herokuapp.com/'
+
+  stream = new EventSource(`${this.url}/stream`)
 
   componentDidMount () {
     this.stream.onmessage = event => {
@@ -45,7 +48,7 @@ class App extends Component {
   onSubmit = async (event) => {
     event.preventDefault()
 
-    const url = 'http://localhost:4000/message'
+    const url = `${this.url}/message`
 
     const response = await superagent
       .post(url)

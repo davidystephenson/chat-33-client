@@ -15,7 +15,7 @@ class App extends Component {
   }
 
   // url = 'http://localhost:4000'
-  url = 'https://hidden-earth-70020.herokuapp.com/'
+  url = 'https://hidden-earth-70020.herokuapp.com'
 
   stream = new EventSource(`${this.url}/stream`)
 

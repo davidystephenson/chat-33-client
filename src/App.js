@@ -2,8 +2,18 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import superagent from 'superagent'
+
+// 1. Remove allMesssages import
+// 2. Remove mapDispatchToProps object
+// 3. Pass only mapStateToProps to connected (not mapDispatchToProps)
+// 4. Dispatch action directly from componentDidMount with this.props.dispatch
 
 class App extends Component {
+  state = {
+    text: ''
+  }
+
   stream = new EventSource('http://localhost:4000/stream')
 
   componentDidMount () {
@@ -17,6 +27,35 @@ class App extends Component {
     }
   }
 
+  onChange = (event) => {
+    // const value = event.target.value
+    // const { target } = event
+    // const { value } = target
+    const { target: { value } } = event
+    // target === undefined
+    // value === 'some string value'
+
+    this.setState({ text: value })
+  }
+
+  reset = () => {
+    this.setState({ text: '' })
+  }
+
+  onSubmit = async (event) => {
+    event.preventDefault()
+
+    const url = 'http://localhost:4000/message'
+
+    const response = await superagent
+      .post(url)
+      .send(this.state)
+
+    this.reset()
+
+    console.log('response test:', response)
+  }
+
   render () {
     console.log('this.props test:', this.props)
 
@@ -25,7 +64,20 @@ class App extends Component {
     const list = messages
       .map(message => <p key={message.id}>{message.text}</p>)
 
-    return <div>{list}</div>
+    return <main>
+      <form onSubmit={this.onSubmit}>
+        <input
+          onChange={this.onChange}
+          type='text'
+          value={this.state.text}
+        />
+        <button>Submit</button>
+      </form>
+
+      <button onClick={this.reset}>Reset</button>
+
+      {list}
+    </main>
   }
 }
 
